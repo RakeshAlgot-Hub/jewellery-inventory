@@ -22,10 +22,12 @@ const HomePage: React.FC = () => {
         apiService.getCategories(),
       ]);
       
-      setFeaturedProducts(productsRes.filter(p => p.featured).slice(0, 8));
-      setCategories(categoriesRes);
+      setFeaturedProducts((productsRes || []).filter(p => p.featured).slice(0, 8));
+      setCategories(categoriesRes || []);
     } catch (error) {
       console.error('Error loading data:', error);
+      setFeaturedProducts([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -91,20 +93,20 @@ const HomePage: React.FC = () => {
             {categories.slice(0, 6).map((category) => (
               <Link
                 key={category.id}
-                to={`/category/${category.name.toLowerCase().replace(/ /g, '-')}`}
+                to={`/category/${(category.name || '').toLowerCase().replace(/ /g, '-')}`}
                 className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
               >
                 <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
                   <img
                     src={`https://images.pexels.com/photos/${category.id === '1' ? '1191537' : category.id === '2' ? '1447333' : '1191537'}/pexels-photo-${category.id === '1' ? '1191537' : category.id === '2' ? '1447333' : '1191537'}.jpeg`}
-                    alt={category.name}
+                    alt={category.name || 'Category'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-opacity"></div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
-                  <p className="text-gray-600 mb-4">{category.description}</p>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name || 'Category'}</h3>
+                  <p className="text-gray-600 mb-4">{category.description || 'Explore our collection'}</p>
                   <div className="flex items-center text-purple-600 group-hover:text-purple-700">
                     <span className="font-medium">Explore</span>
                     <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -138,6 +140,12 @@ const HomePage: React.FC = () => {
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
+          
+          {featuredProducts.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No featured products available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
 

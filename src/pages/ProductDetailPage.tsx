@@ -34,6 +34,7 @@ const ProductDetailPage: React.FC = () => {
       setProduct(productData);
     } catch (error) {
       console.error('Error loading product:', error);
+      setProduct(null);
     } finally {
       setLoading(false);
     }
@@ -42,9 +43,10 @@ const ProductDetailPage: React.FC = () => {
   const loadReviews = async () => {
     try {
       const reviewsData = await apiService.getProductReviews(slug!);
-      setReviews(reviewsData);
+      setReviews(reviewsData || []);
     } catch (error) {
       console.error('Error loading reviews:', error);
+      setReviews([]);
     }
   };
 

@@ -42,13 +42,13 @@ const ProductsPage: React.FC = () => {
       
       const productsRes = await apiService.filterProducts(searchFilters);
       
-      let filteredProducts = productsRes;
+      let filteredProducts = productsRes || [];
       
       // Apply text search if query exists
       if (query) {
-        filteredProducts = productsRes.filter(product => 
-          product.name.toLowerCase().includes(query.toLowerCase()) ||
-          product.description.toLowerCase().includes(query.toLowerCase())
+        filteredProducts = filteredProducts.filter(product => 
+          (product.name || '').toLowerCase().includes(query.toLowerCase()) ||
+          (product.description || '').toLowerCase().includes(query.toLowerCase())
         );
       }
       
@@ -58,21 +58,24 @@ const ProductsPage: React.FC = () => {
       setProducts(filteredProducts);
     } catch (error) {
       console.error('Error loading products:', error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
 
   const sortProducts = (products: Product[], sortBy: string) => {
+    if (!products || !Array.isArray(products)) return [];
+    
     switch (sortBy) {
       case 'price-low':
-        return [...products].sort((a, b) => a.price - b.price);
+        return [...products].sort((a, b) => (a.price || 0) - (b.price || 0));
       case 'price-high':
-        return [...products].sort((a, b) => b.price - a.price);
+        return [...products].sort((a, b) => (b.price || 0) - (a.price || 0));
       case 'rating':
         return [...products].sort((a, b) => (b.rating || 0) - (a.rating || 0));
       case 'newest':
-        return [...products].sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime());
+        return [...products].sort((a, b) => new Date(b.id || '').getTime() - new Date(a.id || '').getTime());
       default:
         return products;
     }

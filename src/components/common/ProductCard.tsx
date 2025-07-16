@@ -28,6 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const getTagColor = (tag: string) => {
+    if (!tag) return 'bg-blue-500';
     switch (tag.toLowerCase()) {
       case 'bestseller':
         return 'bg-yellow-500';
@@ -45,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="relative">
         <Link to={`/product/${product.slug || product.id}`}>
           <img
-            src={product.images[0] || 'https://images.pexels.com/photos/1191537/pexels-photo-1191537.jpeg'}
+            src={product.images?.[0] || 'https://images.pexels.com/photos/1191537/pexels-photo-1191537.jpeg'}
             alt={product.name}
             className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -53,7 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         
         {/* Tags */}
         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-          {product.tags.map((tag, index) => (
+          {(product.tags || []).map((tag, index) => (
             <span
               key={index}
               className={`${getTagColor(tag)} text-white text-xs px-2 py-1 rounded-full uppercase font-medium`}
@@ -113,11 +114,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-gray-900">
-              ₹{product.price.toLocaleString()}
+              ₹{(product.price || 0).toLocaleString()}
             </span>
             {product.featured && (
               <span className="text-sm text-gray-500 line-through">
-                ₹{Math.round(product.price * 1.2).toLocaleString()}
+                ₹{Math.round((product.price || 0) * 1.2).toLocaleString()}
               </span>
             )}
           </div>
