@@ -44,6 +44,7 @@ export interface Product {
   reviews?: number;
   featured?: boolean;
   tags: string[];
+  noOfProducts: number;
   variants: {
     size?: string;
     metal?: string;

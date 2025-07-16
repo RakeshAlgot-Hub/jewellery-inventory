@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useCategoryStore } from '../store/categoryStore';
 import { Filter, Grid, List } from 'lucide-react';
 import { Product, ProductFilters } from '../types';
 import { apiService } from '../services/api';
@@ -15,8 +16,13 @@ const ProductsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('featured');
   const [searchParams] = useSearchParams();
+  const { selectedCategory, setSelectedCategory } = useCategoryStore();
 
   useEffect(() => {
+    // Reset category selection when coming to products page without category
+    if (!searchParams.get('category')) {
+      setSelectedCategory(null);
+    }
     loadProducts();
   }, [filters, searchParams]);
 
@@ -27,8 +33,11 @@ const ProductsPage: React.FC = () => {
       const query = searchParams.get('q');
       
       let searchFilters = { ...filters };
-      if (category) {
-        searchFilters.category = category;
+      
+      // Use selectedCategory from store or URL parameter
+      const categoryToFilter = selectedCategory || category;
+      if (categoryToFilter) {
+        searchFilters.category = categoryToFilter;
       }
       
       const productsRes = await apiService.filterProducts(searchFilters);
@@ -85,7 +94,9 @@ const ProductsPage: React.FC = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
-              {searchParams.get('category') ? `${searchParams.get('category')} Collection` : 'All Products'}
+              {selectedCategory || searchParams.get('category') 
+                ? `${(selectedCategory || searchParams.get('category'))?.replace(/\b\w/g, l => l.toUpperCase())} Collection` 
+                : 'All Products'}
             </h1>
             <p className="text-gray-600 mt-1">{products.length} products found</p>
           </div>

@@ -4,14 +4,21 @@ import { Search, ShoppingCart, Heart, User, Menu, X } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
+import { useCategoryStore } from '../../store/categoryStore';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showMoreDropdown, setShowMoreDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user, isAuthenticated, logout } = useAuthStore();
   const { getItemCount } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
+  const { categories, loadCategories, setSelectedCategory } = useCategoryStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,14 +32,10 @@ const Header: React.FC = () => {
     navigate('/');
   };
 
-  const categories = [
-    { name: 'Rings', path: '/category/rings' },
-    { name: 'Earrings', path: '/category/earrings' },
-    { name: 'Bracelets & Bangles', path: '/category/bracelets' },
-    { name: 'Necklaces & Pendants', path: '/category/necklaces' },
-    { name: 'Mangalsutras', path: '/category/mangalsutras' },
-    { name: 'Solitaires', path: '/category/solitaires' },
-  ];
+  const handleCategoryClick = (categoryName: string) => {
+    setSelectedCategory(categoryName);
+    navigate(`/category/${categoryName.toLowerCase().replace(/ /g, '-')}`);
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -147,17 +150,42 @@ const Header: React.FC = () => {
       {/* Navigation */}
       <nav className="bg-purple-700 text-white">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div className="hidden md:flex space-x-8">
-              {categories.map((category) => (
-                <Link
-                  key={category.name}
-                  to={category.path}
-                  className="py-3 px-2 hover:bg-purple-800 transition-colors"
+          <div className="flex items-center justify-between relative">
+            <div className="hidden md:flex space-x-6">
+              {categories.slice(0, 5).map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category.name)}
+                  className="py-3 px-2 hover:bg-purple-800 transition-colors text-sm"
                 >
                   {category.name}
-                </Link>
+                </button>
               ))}
+              {categories.length > 5 && (
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setShowMoreDropdown(true)}
+                  onMouseLeave={() => setShowMoreDropdown(false)}
+                >
+                  <button className="py-3 px-2 hover:bg-purple-800 transition-colors text-sm flex items-center">
+                    More Jewellery
+                    <ChevronDown className="h-4 w-4 ml-1" />
+                  </button>
+                  {showMoreDropdown && (
+                    <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-md py-2 min-w-48 z-50">
+                      {categories.slice(5).map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => handleCategoryClick(category.name)}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                          {category.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm">Services</span>
@@ -173,14 +201,17 @@ const Header: React.FC = () => {
         <div className="md:hidden bg-white border-t">
           <div className="container mx-auto px-4 py-4">
             {categories.map((category) => (
-              <Link
-                key={category.name}
-                to={category.path}
-                className="block py-2 text-gray-700 hover:text-purple-600"
+              <button
+                key={category.id}
+                onClick={() => {
+                  handleCategoryClick(category.name);
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left py-2 text-gray-700 hover:text-purple-600"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {category.name}
-              </Link>
+              </button>
             ))}
           </div>
         </div>

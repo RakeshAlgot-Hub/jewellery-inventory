@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { User } from '../types';
 import { authService } from '../services';
 import { RESPONSE_CODES } from '../constants/appConstants';
+import { useCartStore } from './cartStore';
 
 interface AuthState {
   user: User | null;
@@ -44,6 +45,11 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true, 
               loading: false 
             });
+            
+            // Merge guest cart when user logs in
+            const cartStore = useCartStore.getState();
+            cartStore.mergeGuestCart();
+            
             return true;
           }
           
@@ -77,6 +83,11 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true, 
               loading: false 
             });
+            
+            // Merge guest cart when user registers
+            const cartStore = useCartStore.getState();
+            cartStore.mergeGuestCart();
+            
             return true;
           }
           

@@ -1,10 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
+import { useAuthStore } from '../store/authStore';
+import PaymentHandler from '../components/payment/PaymentHandler';
 
 const CartPage: React.FC = () => {
-  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
+  const { items, guestItems, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Use appropriate items based on auth status
+  const currentItems = isAuthenticated ? items : guestItems;
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
     if (newQuantity < 1) {
@@ -14,12 +21,15 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const handleCheckout = () => {
-    // Implement Razorpay checkout logic
-    console.log('Initiating checkout...');
+  const handlePaymentSuccess = () => {
+    navigate('/order-confirmation');
   };
 
-  if (items.length === 0) {
+  const handlePaymentError = (error: string) => {
+    alert(`Payment failed: ${error}`);
+  };
+
+  if (currentItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -42,7 +52,7 @@ const CartPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-800">
-            Shopping Cart ({items.length})
+            Shopping Cart ({currentItems.length})
           </h1>
           <button
             onClick={clearCart}
@@ -68,7 +78,7 @@ const CartPage: React.FC = () => {
               </div>
 
               <div className="divide-y divide-gray-200">
-                {items.map((item) => (
+                {currentItems.map((item) => (
                   <div key={item.id} className="p-6 flex items-center space-x-4">
                     <img
                       src={item.product.images[0] || 'https://images.pexels.com/photos/1191537/pexels-photo-1191537.jpeg'}
@@ -169,12 +179,19 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                onClick={handleCheckout}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
-              >
-                PLACE ORDER
-              </button>
+              {isAuthenticated ? (
+                <PaymentHandler
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                />
+              ) : (
+                <Link
+                  to="/login"
+                  className="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200 text-center"
+                >
+                  LOGIN TO PROCEED
+                </Link>
+              )}
 
               <div className="mt-6 grid grid-cols-4 gap-4 text-center text-xs text-gray-600">
                 <div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCategoryStore } from '../store/categoryStore';
 import { Product } from '../types';
 import { apiService } from '../services/api';
 import ProductCard from '../components/common/ProductCard';
@@ -15,9 +16,12 @@ const CategoryPage: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('featured');
+  const { setSelectedCategory } = useCategoryStore();
 
   useEffect(() => {
     if (category) {
+      const categoryName = category.replace(/-/g, ' ');
+      setSelectedCategory(categoryName);
       loadProducts();
     }
   }, [category, filters]);

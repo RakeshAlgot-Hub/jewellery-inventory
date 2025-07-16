@@ -76,6 +76,9 @@ const AdminPage: React.FC = () => {
             case 'featured':
               product.featured = value.toLowerCase() === 'true';
               break;
+            case 'noofproducts':
+              product.noOfProducts = parseInt(value) || 0;
+              break;
             default:
               if (header.startsWith('spec_')) {
                 const specKey = header.replace('spec_', '');
@@ -87,6 +90,7 @@ const AdminPage: React.FC = () => {
         
         return {
           ...product,
+          noOfProducts: product.noOfProducts || 0,
           specifications: product.specifications || {},
           variants: {},
           preorderAvailable: false,
@@ -228,12 +232,13 @@ const AdminPage: React.FC = () => {
                   Your CSV should include these columns:
                 </p>
                 <code className="text-xs bg-white p-2 rounded block">
-                  name,category,description,price,images,tags,instock,featured,spec_material,spec_weight
+                  name,category,description,price,images,tags,instock,featured,noOfProducts,spec_material,spec_weight
                 </code>
                 <p className="text-xs text-gray-500 mt-2">
                   • Use | to separate multiple images or tags<br/>
                   • Use spec_ prefix for specifications<br/>
-                  • instock and featured should be true/false
+                  • instock and featured should be true/false<br/>
+                  • noOfProducts should be a number
                 </p>
               </div>
             </div>
@@ -281,7 +286,7 @@ const AdminPage: React.FC = () => {
                                 {product.name}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {product.tags.join(', ')}
+                                Stock: {product.noOfProducts || 0} | {product.tags.join(', ')}
                               </div>
                             </div>
                           </div>
@@ -293,13 +298,18 @@ const AdminPage: React.FC = () => {
                           ₹{product.price.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            product.inStock
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {product.inStock ? 'In Stock' : 'Out of Stock'}
-                          </span>
+                          <div className="flex flex-col">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full mb-1 ${
+                              product.inStock
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {product.inStock ? 'In Stock' : 'Out of Stock'}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              Qty: {product.noOfProducts || 0}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button className="text-purple-600 hover:text-purple-900 mr-3">
