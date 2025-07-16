@@ -130,13 +130,17 @@ export const useCartStore = create<CartState>()(
         const { isAuthenticated } = useAuthStore.getState();
         const targetItems = isAuthenticated ? get().items : get().guestItems;
         
-        return targetItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+        return (targetItems || []).reduce((total, item) => {
+          const price = item?.product?.price || 0;
+          const quantity = item?.quantity || 0;
+          return total + (price * quantity);
+        }, 0);
       },
       getItemCount: () => {
         const { isAuthenticated } = useAuthStore.getState();
         const targetItems = isAuthenticated ? get().items : get().guestItems;
         
-        return targetItems.reduce((count, item) => count + item.quantity, 0);
+        return (targetItems || []).reduce((count, item) => count + (item?.quantity || 0), 0);
       },
     }),
     {

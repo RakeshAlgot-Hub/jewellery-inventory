@@ -24,11 +24,14 @@ const AdminPage: React.FC = () => {
         apiService.getCategories(),
         apiService.getTags(),
       ]);
-      setProducts(productsRes);
-      setCategories(categoriesRes);
-      setTags(tagsRes);
+      setProducts(productsRes || []);
+      setCategories(categoriesRes || []);
+      setTags(tagsRes || []);
     } catch (error) {
       console.error('Error loading data:', error);
+      setProducts([]);
+      setCategories([]);
+      setTags([]);
     } finally {
       setLoading(false);
     }
@@ -277,25 +280,25 @@ const AdminPage: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <img
-                              src={product.images[0] || 'https://images.pexels.com/photos/1191537/pexels-photo-1191537.jpeg'}
-                              alt={product.name}
+                              src={product.images?.[0] || 'https://images.pexels.com/photos/1191537/pexels-photo-1191537.jpeg'}
+                              alt={product.name || 'Product'}
                               className="h-10 w-10 rounded-full object-cover"
                             />
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {product.name}
+                                {product.name || 'Unnamed Product'}
                               </div>
                               <div className="text-sm text-gray-500">
-                                Stock: {product.noOfProducts || 0} | {product.tags.join(', ')}
+                                Stock: {product.noOfProducts || 0} | {(product.tags || []).join(', ')}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {product.category}
+                          {product.category || 'Uncategorized'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{product.price.toLocaleString()}
+                          ₹{(product.price || 0).toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex flex-col">

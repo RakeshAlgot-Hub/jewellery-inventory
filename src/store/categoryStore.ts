@@ -19,10 +19,10 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     set({ loading: true });
     try {
       const categories = await apiService.getCategories();
-      set({ categories, loading: false });
+      set({ categories: categories || [], loading: false });
     } catch (error) {
       console.error('Error loading categories:', error);
-      set({ loading: false });
+      set({ categories: [], loading: false });
     }
   },
 

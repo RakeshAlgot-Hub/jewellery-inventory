@@ -33,18 +33,33 @@ class ApiService {
 
   // Product methods
   async getProducts(): Promise<Product[]> {
-    const response = await productService.getProducts();
-    return response.result;
+    try {
+      const response = await productService.getProducts();
+      return response?.result || [];
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return [];
+    }
   }
 
   async getProductBySlug(slug: string): Promise<Product> {
-    const response = await productService.getProductBySlug(slug);
-    return response.result;
+    try {
+      const response = await productService.getProductBySlug(slug);
+      return response?.result || null;
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      throw error;
+    }
   }
 
   async filterProducts(filters: ProductFilters): Promise<Product[]> {
-    const response = await productService.filterProducts(filters);
-    return response.result;
+    try {
+      const response = await productService.filterProducts(filters);
+      return response?.result || [];
+    } catch (error) {
+      console.error('Error filtering products:', error);
+      return [];
+    }
   }
 
   async importProducts(products: ProductImport[]): Promise<void> {
@@ -62,8 +77,13 @@ class ApiService {
 
   // Category methods
   async getCategories(): Promise<Category[]> {
-    const response = await categoryService.getCategories();
-    return response.result;
+    try {
+      const response = await categoryService.getCategories();
+      return response?.result || [];
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      return [];
+    }
   }
 
   async createCategory(category: Omit<Category, 'id'>): Promise<Category> {
@@ -77,8 +97,13 @@ class ApiService {
 
   // Tag methods
   async getTags(): Promise<Tag[]> {
-    const response = await tagService.getTags();
-    return response.result;
+    try {
+      const response = await tagService.getTags();
+      return response?.result || [];
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      return [];
+    }
   }
 
   async createTag(tag: Omit<Tag, 'id'>): Promise<Tag> {
@@ -103,8 +128,13 @@ class ApiService {
 
   // Review methods
   async getProductReviews(productId: string): Promise<Review[]> {
-    const response = await reviewService.getProductReviews(productId);
-    return response.result;
+    try {
+      const response = await reviewService.getProductReviews(productId);
+      return response?.result || [];
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      return [];
+    }
   }
 
   async addReview(productId: string, review: Omit<Review, 'id' | 'productId' | 'createdAt'>): Promise<Review> {
