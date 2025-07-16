@@ -208,7 +208,6 @@ const Header: React.FC = () => {
                   setIsMenuOpen(false);
                 }}
                 className="block w-full text-left py-2 text-gray-700 hover:text-purple-600"
-                onClick={() => setIsMenuOpen(false)}
               >
                 {category.name}
               </button>
