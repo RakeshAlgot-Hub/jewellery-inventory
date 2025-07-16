@@ -46,7 +46,7 @@ export const API_ENDPOINTS = {
   GET_ORDER: '/orders',
   GET_ORDER_PAYMENTS: '/orders',
   LIST_ORDERS: '/orderservice',
-  VERIFY_PAYMENT: '/payment/verify',
+  VERIFY_PAYMENT: '/payments/payment/verify',
 };
 
 export const RESPONSE_CODES = {

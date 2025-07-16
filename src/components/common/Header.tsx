@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
@@ -62,7 +62,7 @@ const Header: React.FC = () => {
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-sm">CL</span>
             </div>
-            <span className="text-xl font-bold text-gray-800">Jewellery - Inventory</span>
+            <span className="text-xl font-bold text-gray-800">JewelleryInventory</span>
           </Link>
 
           {/* Search bar */}
@@ -169,7 +169,7 @@ const Header: React.FC = () => {
                 </button>
               ))}
               {safeCategories.length > 5 && (
-                <div 
+                <div
                   className="relative"
                   onMouseEnter={() => setShowMoreDropdown(true)}
                   onMouseLeave={() => setShowMoreDropdown(false)}

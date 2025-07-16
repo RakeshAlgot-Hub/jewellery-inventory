@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
 
     const { confirmPassword, ...registerData } = formData;
     const success = await register(registerData);
-    
+
     if (success) {
       navigate('/');
     } else {
@@ -54,7 +54,7 @@ const RegisterPage: React.FC = () => {
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">Create Account</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join Jewellery - Inventory and discover exclusive jewelry collections
+            Join JewelleryInventory and discover exclusive jewelry collections
           </p>
         </div>
 

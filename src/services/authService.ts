@@ -13,7 +13,7 @@ class AuthService extends BaseService {
   }
 
   async verifyToken(): Promise<ApiResponse<TokenVerificationResponse>> {
-    return this.get<TokenVerificationResponse>(API_ENDPOINTS.VERIFY_TOKEN, true);
+    return this.post<TokenVerificationResponse>(API_ENDPOINTS.VERIFY_TOKEN, true);
   }
 
   async logout(): Promise<ApiResponse<void>> {

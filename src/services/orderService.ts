@@ -35,9 +35,9 @@ class OrderService extends BaseService {
     return this.get<Order[]>(API_ENDPOINTS.LIST_ORDERS, true);
   }
 
-  async verifyPayment(paymentData: PaymentVerificationPayload): Promise<ApiResponse<{ success: boolean }>> {
-    return this.post<{ success: boolean }>(API_ENDPOINTS.VERIFY_PAYMENT, paymentData);
+  async verifyPayment(paymentData: PaymentVerificationPayload): Promise<ApiResponse<{ status: string }>> {
+    return this.post<{ status: string }>(API_ENDPOINTS.VERIFY_PAYMENT, paymentData, true);
   }
 }
 
-export const orderService = new OrderService();
+  export const orderService = new OrderService();

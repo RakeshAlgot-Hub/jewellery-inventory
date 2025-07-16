@@ -26,10 +26,10 @@ const LoginPage: React.FC = () => {
     setError('');
 
     const success = await login(formData);
-    
+
     if (success) {
       const { user } = useAuthStore.getState();
-      
+
       // Redirect based on user role
       if (user?.role === 'Admin') {
         navigate('/admin');
@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
           <div className="mx-auto h-12 w-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-lg">CL</span>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Login to Jewellery - Inventory</h2>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">Login to JewelleryInventory</h2>
           <p className="mt-2 text-sm text-gray-600">
             Login to unlock best prices and become an insider for our exclusive launches & offers.
           </p>
@@ -118,7 +118,7 @@ const LoginPage: React.FC = () => {
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              New to Jewellery - Inventory?{' '}
+              New to JewelleryInventory?{' '}
               <Link to="/register" className="font-medium text-purple-600 hover:text-purple-500">
                 Create an Account
               </Link>

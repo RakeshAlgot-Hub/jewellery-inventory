@@ -43,13 +43,14 @@ const PaymentHandler: React.FC<PaymentHandlerProps> = ({ onSuccess, onError }) =
       }
 
       const totalAmount = getTotalPrice();
-      
+
       if (totalAmount <= 0) {
         onError('Cart is empty or invalid amount');
         return;
       }
-      
+
       // Create order
+
       const orderData = await apiService.createOrder({
         amount: Math.round(totalAmount * 100), // Convert to paise
         currency: 'INR',
@@ -69,7 +70,7 @@ const PaymentHandler: React.FC<PaymentHandlerProps> = ({ onSuccess, onError }) =
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_key', // Replace with your Razorpay key
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Jewellery - Inventory',
+        name: 'JewelleryInventory',
         description: 'Jewelry Purchase',
         order_id: orderData.id,
         handler: async (response: any) => {
@@ -78,7 +79,7 @@ const PaymentHandler: React.FC<PaymentHandlerProps> = ({ onSuccess, onError }) =
               onError('Invalid payment response');
               return;
             }
-            
+
             // Verify payment
             const verificationResult = await apiService.verifyPayment({
               razorpay_order_id: response.razorpay_order_id,
@@ -86,7 +87,7 @@ const PaymentHandler: React.FC<PaymentHandlerProps> = ({ onSuccess, onError }) =
               razorpay_signature: response.razorpay_signature,
             });
 
-            if (verificationResult?.success) {
+            if (verificationResult?.status === 'success') {
               clearCart();
               onSuccess();
             } else {
